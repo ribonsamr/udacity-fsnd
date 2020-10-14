@@ -5,6 +5,7 @@
 import json
 import logging
 from logging import FileHandler, Formatter
+import sys
 
 import babel
 import dateutil.parser
@@ -77,6 +78,7 @@ class Show(db.Model):
     artist_id = db.Column(db.Integer, db.ForeignKey('Artist.id'))
     venue_id = db.Column(db.Integer, db.ForeignKey('Venue.id'))
     start_time = db.Column(db.DateTime)
+
 
 #----------------------------------------------------------------------------#
 # Filters.
@@ -313,15 +315,31 @@ def create_venue_form():
 
 @app.route('/venues/create', methods=['POST'])
 def create_venue_submission():
-    # TODO: insert form data as a new Venue record in the db, instead
-    # TODO: modify data to be the data object returned from db insertion
+    venue = Venue(
+        name=request.form['name'],
+        city=request.form['city'],
+        state=request.form['state'],
+        address=request.form['address'],
+        phone=request.form['phone'],
+        image_link=request.form['image_link'],
+        genres=request.form['genres'],
+        facebook_link=request.form['facebook_link'],
+        seeking_talent=True if request.form['seeking_talent'] == 'y' else False,
+        seeking_description=request.form['seeking_description'],
+    )
+    try:
+        db.session.add(venue)
+        db.session.commit()
+        flash('Venue ' + request.form['name'] + ' was successfully listed!')
+    except:
+        print(sys.exc_info())
+        db.session.rollback()
+        flash('An error occurred. Venue ' + request.form['name'] +
+              ' could not be listed.')
+    finally:
+        db.session.close()
 
-    # on successful db insert, flash success
-    flash('Venue ' + request.form['name'] + ' was successfully listed!')
-    # TODO: on unsuccessful db insert, flash an error instead.
-    # e.g., flash('An error occurred. Venue ' + data.name + ' could not be listed.')
-    # see: http://flask.pocoo.org/docs/1.0/patterns/flashing/
-    return render_template('pages/home.html')
+    return redirect(url_for('index'))
 
 
 @app.route('/venues/<venue_id>', methods=['DELETE'])
