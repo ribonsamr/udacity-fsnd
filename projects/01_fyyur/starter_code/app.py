@@ -323,7 +323,7 @@ def create_venue_submission():
         address=request.form['address'],
         phone=request.form['phone'],
         image_link=request.form['image_link'],
-        genres=request.form['genres'],
+        genres=request.form.getlist('genres'),
         facebook_link=request.form['facebook_link'],
         seeking_talent=True if request.form['seeking_talent'] == 'y' else False,
         seeking_description=request.form['seeking_description'],
