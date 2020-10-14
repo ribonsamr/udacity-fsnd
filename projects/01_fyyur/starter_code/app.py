@@ -325,7 +325,7 @@ def create_venue_submission():
         image_link=request.form['image_link'],
         genres=request.form.getlist('genres'),
         facebook_link=request.form['facebook_link'],
-        seeking_talent=True if request.form['seeking_talent'] == 'y' else False,
+        seeking_talent=True if request.form.get('seeking_talent', None) == 'y' else False,
         seeking_description=request.form['seeking_description'],
     )
     try:
