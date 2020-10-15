@@ -578,6 +578,29 @@ def show_artist(artist_id):
     artist = Artist.query.get(artist_id)
     data = artist
     data.genres = data.genres.split(',')
+
+    shows = data.shows
+    past_shows = list(
+        filter(lambda show: show.start_time < datetime.utcnow(), shows))
+    upcoming_shows = list(
+        filter(lambda show: show.start_time >= datetime.utcnow(), shows))
+
+    data.upcoming_shows = [{
+        "venue_id": show.venue_id,
+        "venue_name": show.venue.name,
+        "venue_image_link": show.venue.image_link,
+        "start_time": str(show.start_time)
+    } for show in upcoming_shows]
+
+    data.past_shows = [{
+        "venue_id": show.venue_id,
+        "venue_name": show.venue.name,
+        "venue_image_link": show.venue.image_link,
+        "start_time": str(show.start_time)
+    } for show in past_shows]
+
+    data.past_shows_count = len(past_shows)
+    data.upcoming_shows_count = len(upcoming_shows)
     return render_template('pages/show_artist.html', artist=data)
 
 
