@@ -110,8 +110,6 @@ def index():
 
 @app.route('/venues')
 def venues():
-    # TODO: replace with real venues data.
-    #       num_shows should be aggregated based on number of upcoming shows per venue.
     areas = list(set(Venue.query.with_entities(Venue.city, Venue.state).all()))
     data = []
     for area in areas:
@@ -662,7 +660,7 @@ def edit_venue_submission(venue_id):
     form = VenueForm(obj=venue)
     form.populate_obj(venue)
     venue.genres = ','.join(venue.genres)
-    
+
     try:
         db.session.add(venue)
         db.session.commit()
