@@ -29,8 +29,16 @@
       {{ form.genres(class_ = 'form-control', placeholder='Genres, separated by commas', autofocus = true) }}
     </div>
     <div class="form-group">
+      <label for="genres">Website</label>
+      {{ form.website(class_ = 'form-control', placeholder='http://', autofocus = true) }}
+    </div>
+    <div class="form-group">
       <label for="genres">Facebook Link</label>
       {{ form.facebook_link(class_ = 'form-control', placeholder='http://', autofocus = true) }}
+    </div>
+    <div class="form-group">
+      <label for="genres">Image Link</label>
+      {{ form.image_link(class_ = 'form-control', placeholder='http://', autofocus = true) }}
     </div>
     <div class="form-group">
       <label for="genres">Seeking Venue</label>
