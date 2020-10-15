@@ -1,7 +1,11 @@
+import re
 from datetime import datetime
+
 from flask_wtf import Form
-from wtforms import StringField, SelectField, SelectMultipleField, DateTimeField, BooleanField
-from wtforms.validators import DataRequired, AnyOf, URL
+from wtforms import (BooleanField, DateTimeField, SelectField,
+                     SelectMultipleField, StringField)
+from wtforms.validators import (URL, AnyOf, DataRequired, Regexp,
+                                ValidationError)
 
 
 class ShowForm(Form):
@@ -71,16 +75,23 @@ class VenueForm(Form):
                             ('WY', 'WY'),
                         ])
     address = StringField('address', validators=[DataRequired()])
-    phone = StringField('phone')
+    phone = StringField(
+        'phone',
+        validators=[
+            DataRequired(),
+            Regexp(regex='^([0-9]{3})[-][0-9]{3}[-][0-9]{4}$',
+                   message='Error, phone number must be in format xxx-xxx-xxxx')
+        ])
     image_link = StringField('image_link')
-    website = StringField(
-        # TODO implement enum restriction
-        'website',
-        validators=[URL()])
+    website = StringField('website', validators=[DataRequired(), URL()])
     genres = SelectMultipleField(
         # TODO implement enum restriction
         'genres',
-        validators=[DataRequired()],
+        validators=[
+            DataRequired(),
+            Regexp(regex='^[a-zA-Z]+$',
+                   message='Error, genre is not recognized')
+        ],
         choices=[
             ('Alternative', 'Alternative'),
             ('Blues', 'Blues'),
@@ -102,7 +113,9 @@ class VenueForm(Form):
             ('Soul', 'Soul'),
             ('Other', 'Other'),
         ])
-    facebook_link = StringField('facebook_link', validators=[URL()])
+    facebook_link = StringField('facebook_link',
+                                validators=[DataRequired(),
+                                            URL()])
     seeking_talent = BooleanField('seeking_talent')
     seeking_description = StringField('seeking_description')
 
@@ -166,13 +179,20 @@ class ArtistForm(Form):
                             ('WY', 'WY'),
                         ])
     phone = StringField(
-        # TODO implement validation logic for state
-        'phone')
+        'phone',
+        validators=[
+            DataRequired(),
+            Regexp(regex='^([0-9]{3})[-][0-9]{3}[-][0-9]{4}$',
+                   message='Error, phone number must be in format xxx-xxx-xxxx')
+        ])
     image_link = StringField('image_link')
     genres = SelectMultipleField(
-        # TODO implement enum restriction
         'genres',
-        validators=[DataRequired()],
+        validators=[
+            DataRequired(),
+            Regexp(regex='^[a-zA-Z]+$',
+                   message='Error, genre is not recognized')
+        ],
         choices=[
             ('Alternative', 'Alternative'),
             ('Blues', 'Blues'),
@@ -194,13 +214,9 @@ class ArtistForm(Form):
             ('Soul', 'Soul'),
             ('Other', 'Other'),
         ])
-    website = StringField(
-        # TODO implement enum restriction
-        'website',
-        validators=[URL()])
-    facebook_link = StringField(
-        # TODO implement enum restriction
-        'facebook_link',
-        validators=[URL()])
+    website = StringField('website', validators=[DataRequired(), URL()])
+    facebook_link = StringField('facebook_link',
+                                validators=[DataRequired(),
+                                            URL()])
     seeking_venue = BooleanField('seeking_venue')
     seeking_description = StringField('seeking_description')

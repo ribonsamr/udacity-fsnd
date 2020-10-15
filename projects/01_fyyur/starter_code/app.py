@@ -16,6 +16,7 @@ from flask_migrate import Migrate
 from flask_moment import Moment
 from flask_sqlalchemy import SQLAlchemy
 from flask_wtf import Form
+from wtforms.validators import (ValidationError)
 from models import *
 from forms import *
 
@@ -29,7 +30,6 @@ app.config.from_object('config')
 db = SQLAlchemy(app)
 
 migrate = Migrate(app, db)
-
 
 #----------------------------------------------------------------------------#
 # Filters.
@@ -148,21 +148,24 @@ def create_venue_form():
 
 @app.route('/venues/create', methods=['POST'])
 def create_venue_submission():
-    venue = Venue(
-        name=request.form['name'],
-        city=request.form['city'],
-        state=request.form['state'],
-        address=request.form['address'],
-        phone=request.form['phone'],
-        image_link=request.form['image_link'],
-        website=request.form['website'],
-        genres=','.join(request.form.getlist('genres')),
-        facebook_link=request.form['facebook_link'],
-        seeking_talent=True
-        if request.form.get('seeking_talent', None) == 'y' else False,
-        seeking_description=request.form['seeking_description'],
-    )
+    form = VenueForm()
     try:
+        if not form.validate_on_submit():
+            raise ValidationError()
+        venue = Venue(
+            name=request.form['name'],
+            city=request.form['city'],
+            state=request.form['state'],
+            address=request.form['address'],
+            phone=request.form['phone'],
+            image_link=request.form['image_link'],
+            website=request.form['website'],
+            genres=','.join(request.form.getlist('genres')),
+            facebook_link=request.form['facebook_link'],
+            seeking_talent=True
+            if request.form.get('seeking_talent', None) == 'y' else False,
+            seeking_description=request.form['seeking_description'],
+        )
         db.session.add(venue)
         db.session.commit()
         flash('Venue ' + request.form['name'] + ' was successfully listed!')
@@ -274,11 +277,14 @@ def edit_artist(artist_id):
 
 @app.route('/artists/<int:artist_id>/edit', methods=['POST'])
 def edit_artist_submission(artist_id):
-    artist = Artist.query.get(artist_id)
-    form = ArtistForm(obj=artist)
-    form.populate_obj(artist)
-    artist.genres = ','.join(artist.genres)
+    form = ArtistForm()
     try:
+        if not form.validate_on_submit():
+            raise ValidationError()
+        artist = Artist.query.get(artist_id)
+        form = ArtistForm(obj=artist)
+        form.populate_obj(artist)
+        artist.genres = ','.join(artist.genres)
         db.session.add(artist)
         db.session.commit()
     except:
@@ -300,12 +306,15 @@ def edit_venue(venue_id):
 
 @app.route('/venues/<int:venue_id>/edit', methods=['POST'])
 def edit_venue_submission(venue_id):
-    venue = Venue.query.get(venue_id)
-    form = VenueForm(obj=venue)
-    form.populate_obj(venue)
-    venue.genres = ','.join(venue.genres)
+    form = VenueForm()
 
     try:
+        if not form.validate_on_submit():
+            raise ValidationError()
+        venue = Venue.query.get(venue_id)
+        form = VenueForm(obj=venue)
+        form.populate_obj(venue)
+        venue.genres = ','.join(venue.genres)
         db.session.add(venue)
         db.session.commit()
     except:
@@ -329,20 +338,24 @@ def create_artist_form():
 
 @app.route('/artists/create', methods=['POST'])
 def create_artist_submission():
-    artist = Artist(
-        name=request.form['name'],
-        city=request.form['city'],
-        state=request.form['state'],
-        phone=request.form['phone'],
-        image_link=request.form['image_link'],
-        website=request.form['website'],
-        genres=','.join(request.form.getlist('genres')),
-        facebook_link=request.form['facebook_link'],
-        seeking_venue=True
-        if request.form.get('seeking_venue', None) == 'y' else False,
-        seeking_description=request.form['seeking_description'],
-    )
+    form = ArtistForm()
+
     try:
+        if not form.validate_on_submit():
+            raise ValidationError()
+        artist = Artist(
+            name=request.form['name'],
+            city=request.form['city'],
+            state=request.form['state'],
+            phone=request.form['phone'],
+            image_link=request.form['image_link'],
+            website=request.form['website'],
+            genres=','.join(request.form.getlist('genres')),
+            facebook_link=request.form['facebook_link'],
+            seeking_venue=True
+            if request.form.get('seeking_venue', None) == 'y' else False,
+            seeking_description=request.form['seeking_description'],
+        )
         db.session.add(artist)
         db.session.commit()
         flash('Artist ' + request.form['name'] + ' was successfully listed!')
@@ -384,12 +397,16 @@ def create_shows():
 
 @app.route('/shows/create', methods=['POST'])
 def create_show_submission():
-    show = Show(
-        artist_id=request.form['artist_id'],
-        venue_id=request.form['venue_id'],
-        start_time=request.form['start_time'],
-    )
+    form = ShowForm()
+
     try:
+        if not form.validate_on_submit():
+            raise ValidationError()
+        show = Show(
+            artist_id=request.form['artist_id'],
+            venue_id=request.form['venue_id'],
+            start_time=request.form['start_time'],
+        )
         db.session.add(show)
         db.session.commit()
         flash('Show was successfully listed!')
