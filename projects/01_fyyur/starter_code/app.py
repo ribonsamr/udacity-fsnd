@@ -169,11 +169,19 @@ def search_venues():
     query = Venue.query.filter(Venue.name.ilike(f"%{search}%")).all()
 
     response = {
-        "count": len(query),
+        "count":
+            len(query),
         "data": [{
-            "id": venue.id,
-            "name": venue.name,
-            "num_upcoming_shows": len(list(filter(lambda show: show.start_time >= datetime.utcnow(), venue.shows)))
+            "id":
+                venue.id,
+            "name":
+                venue.name,
+            "num_upcoming_shows":
+                len(
+                    list(
+                        filter(
+                            lambda show: show.start_time >= datetime.utcnow(),
+                            venue.shows)))
         } for venue in query]
     }
     return render_template('pages/search_venues.html',
@@ -439,11 +447,19 @@ def search_artists():
     search = request.form.get('search_term', '')
     query = Artist.query.filter(Artist.name.ilike(f"%{search}%")).all()
     response = {
-        "count": len(query),
+        "count":
+            len(query),
         "data": [{
-            "id": artist.id,
-            "name": artist.name,
-            "num_upcoming_shows": len(list(filter(lambda show: show.start_time >= datetime.utcnow(), artist.shows)))
+            "id":
+                artist.id,
+            "name":
+                artist.name,
+            "num_upcoming_shows":
+                len(
+                    list(
+                        filter(
+                            lambda show: show.start_time >= datetime.utcnow(),
+                            artist.shows)))
         } for artist in query]
     }
     return render_template('pages/search_artists.html',
@@ -616,8 +632,17 @@ def edit_artist(artist_id):
 
 @app.route('/artists/<int:artist_id>/edit', methods=['POST'])
 def edit_artist_submission(artist_id):
-    # TODO: take values from the form submitted, and update existing
-    # artist record with ID <artist_id> using the new attributes
+    artist = Artist.query.get(artist_id)
+    form = ArtistForm(obj=artist)
+    form.populate_obj(artist)
+    try:
+        db.session.add(artist)
+        db.session.commit()
+    except:
+        print(sys.exc_info())
+        db.session.rollback()
+    finally:
+        db.session.close()
 
     return redirect(url_for('show_artist', artist_id=artist_id))
 
@@ -632,29 +657,19 @@ def edit_venue(venue_id):
 
 @app.route('/venues/<int:venue_id>/edit', methods=['POST'])
 def edit_venue_submission(venue_id):
+    venue = Venue.query.get(venue_id)
+    form = VenueForm(obj=venue)
+    form.populate_obj(venue)
+    
     try:
-        venue = Venue.query.get(venue_id)
-        venue.name = request.form['name']
-        venue.city = request.form['city']
-        venue.state = request.form['state']
-        venue.address = request.form['address']
-        venue.phone = request.form['phone']
-        venue.image_link = request.form['image_link']
-        venue.website = request.form['website']
-        venue.genres = request.form.getlist('genres'),
-        venue.facebook_link = request.form['facebook_link']
-        venue.seeking_talent = True if request.form.get('seeking_talent',
-                                                        None) == 'y' else False
-        venue.seeking_description = request.form.get('seeking_description', "")
+        db.session.add(venue)
         db.session.commit()
-        flash('Venue ' + request.form['name'] + ' was successfully updated!')
     except:
         print(sys.exc_info())
         db.session.rollback()
-        flash('An error occurred. Venue ' + request.form['name'] +
-              ' could not be updated.')
     finally:
         db.session.close()
+
     return redirect(url_for('show_venue', venue_id=venue_id))
 
 
