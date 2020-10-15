@@ -16,7 +16,7 @@ from flask_migrate import Migrate
 from flask_moment import Moment
 from flask_sqlalchemy import SQLAlchemy
 from flask_wtf import Form
-
+from models import *
 from forms import *
 
 #----------------------------------------------------------------------------#
