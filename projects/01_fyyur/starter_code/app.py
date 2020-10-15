@@ -27,7 +27,7 @@ from forms import *
 app = Flask(__name__)
 moment = Moment(app)
 app.config.from_object('config')
-db = SQLAlchemy(app)
+db.init_app(app)
 
 migrate = Migrate(app, db)
 
@@ -111,11 +111,12 @@ def show_venue(venue_id):
     data = venue
     data.genres = data.genres.split(',')
 
-    shows = data.shows
-    past_shows = list(
-        filter(lambda show: show.start_time < datetime.utcnow(), shows))
-    upcoming_shows = list(
-        filter(lambda show: show.start_time >= datetime.utcnow(), shows))
+    past_shows = db.session.query(Show).join(Venue).filter(
+        Show.venue_id == venue_id).filter(
+            Show.start_time < datetime.now()).all()
+    upcoming_shows = db.session.query(Show).join(Venue).filter(
+        Show.venue_id == venue_id).filter(
+            Show.start_time >= datetime.now()).all()
 
     data.upcoming_shows = [{
         "artist_id": show.artist_id,
@@ -240,11 +241,12 @@ def show_artist(artist_id):
     data = artist
     data.genres = data.genres.split(',')
 
-    shows = data.shows
-    past_shows = list(
-        filter(lambda show: show.start_time < datetime.utcnow(), shows))
-    upcoming_shows = list(
-        filter(lambda show: show.start_time >= datetime.utcnow(), shows))
+    past_shows = db.session.query(Show).join(Venue).filter(
+        Show.artist_id == artist_id).filter(
+            Show.start_time < datetime.now()).all()
+    upcoming_shows = db.session.query(Show).join(Venue).filter(
+        Show.artist_id == artist_id).filter(
+            Show.start_time >= datetime.now()).all()
 
     data.upcoming_shows = [{
         "venue_id": show.venue_id,
