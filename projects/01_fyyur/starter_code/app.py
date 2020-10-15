@@ -315,6 +315,7 @@ def show_venue(venue_id):
     # }
     venue = Venue.query.get(venue_id)
     data = venue
+    data.genres = data.genres.split(',')
     return render_template('pages/show_venue.html', venue=data)
 
 
