@@ -13,9 +13,9 @@ class Show(db.Model):
     artist_id = db.Column(db.Integer,
                           db.ForeignKey('Artist.id'),
                           nullable=False)
-    artist = db.relationship("Artist", backref="shows", nullable=False)
+    artist = db.relationship("Artist", backref="shows")
     venue_id = db.Column(db.Integer, db.ForeignKey('Venue.id'), nullable=False)
-    venue = db.relationship("Venue", backref="shows", nullable=False)
+    venue = db.relationship("Venue", backref="shows")
     start_time = db.Column(db.DateTime, nullable=False)
 
 
