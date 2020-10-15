@@ -635,6 +635,7 @@ def edit_artist_submission(artist_id):
     artist = Artist.query.get(artist_id)
     form = ArtistForm(obj=artist)
     form.populate_obj(artist)
+    artist.genres = ','.join(artist.genres)
     try:
         db.session.add(artist)
         db.session.commit()
@@ -660,6 +661,7 @@ def edit_venue_submission(venue_id):
     venue = Venue.query.get(venue_id)
     form = VenueForm(obj=venue)
     form.populate_obj(venue)
+    venue.genres = ','.join(venue.genres)
     
     try:
         db.session.add(venue)
