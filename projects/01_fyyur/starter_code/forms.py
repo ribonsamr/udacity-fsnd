@@ -82,15 +82,13 @@ class VenueForm(Form):
             Regexp(regex='^([0-9]{3})[-][0-9]{3}[-][0-9]{4}$',
                    message='Error, phone number must be in format xxx-xxx-xxxx')
         ])
-    image_link = StringField('image_link')
-    website = StringField('website', validators=[DataRequired(), URL()])
+    image_link = StringField('image_link', validators=[DataRequired(), URL('Image link is not correct')])
+    website = StringField('website', validators=[DataRequired(), URL('Website url is not correct')])
     genres = SelectMultipleField(
         # TODO implement enum restriction
         'genres',
         validators=[
             DataRequired(),
-            Regexp(regex='^[a-zA-Z]+$',
-                   message='Error, genre is not recognized')
         ],
         choices=[
             ('Alternative', 'Alternative'),
@@ -115,7 +113,7 @@ class VenueForm(Form):
         ])
     facebook_link = StringField('facebook_link',
                                 validators=[DataRequired(),
-                                            URL()])
+                                            URL('Facebook link is not correct')])
     seeking_talent = BooleanField('seeking_talent')
     seeking_description = StringField('seeking_description')
 
@@ -189,9 +187,7 @@ class ArtistForm(Form):
     genres = SelectMultipleField(
         'genres',
         validators=[
-            DataRequired(),
-            Regexp(regex='^[a-zA-Z]+$',
-                   message='Error, genre is not recognized')
+            DataRequired()
         ],
         choices=[
             ('Alternative', 'Alternative'),

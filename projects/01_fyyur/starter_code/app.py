@@ -15,7 +15,7 @@ from flask import (Flask, Response, flash, redirect, render_template, request,
 from flask_migrate import Migrate
 from flask_moment import Moment
 from flask_sqlalchemy import SQLAlchemy
-from flask_wtf import Form
+from flask_wtf import Form, CsrfProtect
 from wtforms.validators import (ValidationError)
 from models import *
 from forms import *
@@ -30,7 +30,7 @@ app.config.from_object('config')
 db.init_app(app)
 
 migrate = Migrate(app, db)
-
+csrf = CsrfProtect(app)
 #----------------------------------------------------------------------------#
 # Filters.
 #----------------------------------------------------------------------------#
@@ -152,6 +152,7 @@ def create_venue_submission():
     form = VenueForm()
     try:
         if not form.validate_on_submit():
+            flash(form.errors)
             raise ValidationError()
         venue = Venue(
             name=request.form['name'],
@@ -282,6 +283,7 @@ def edit_artist_submission(artist_id):
     form = ArtistForm()
     try:
         if not form.validate_on_submit():
+            flash(form.errors)
             raise ValidationError()
         artist = Artist.query.get(artist_id)
         form = ArtistForm(obj=artist)
@@ -312,6 +314,7 @@ def edit_venue_submission(venue_id):
 
     try:
         if not form.validate_on_submit():
+            flash(form.errors)
             raise ValidationError()
         venue = Venue.query.get(venue_id)
         form = VenueForm(obj=venue)
@@ -344,6 +347,7 @@ def create_artist_submission():
 
     try:
         if not form.validate_on_submit():
+            flash(form.errors)
             raise ValidationError()
         artist = Artist(
             name=request.form['name'],
@@ -403,6 +407,7 @@ def create_show_submission():
 
     try:
         if not form.validate_on_submit():
+            flash(form.errors)
             raise ValidationError()
         show = Show(
             artist_id=request.form['artist_id'],
