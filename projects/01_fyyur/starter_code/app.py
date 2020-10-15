@@ -338,7 +338,7 @@ def create_venue_submission():
         address=request.form['address'],
         phone=request.form['phone'],
         image_link=request.form['image_link'],
-        website=request.form['website_link'],
+        website=request.form['website'],
         genres=','.join(request.form.getlist('genres')),
         facebook_link=request.form['facebook_link'],
         seeking_talent=True
@@ -656,7 +656,7 @@ def create_artist_submission():
         state=request.form['state'],
         phone=request.form['phone'],
         image_link=request.form['image_link'],
-        website=request.form['website_link'],
+        website=request.form['website'],
         genres=','.join(request.form.getlist('genres')),
         facebook_link=request.form['facebook_link'],
         seeking_venue=True
