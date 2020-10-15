@@ -161,14 +161,23 @@ def search_venues():
     # TODO: implement search on artists with partial string search. Ensure it is case-insensitive.
     # seach for Hop should return "The Musical Hop".
     # search for "Music" should return "The Musical Hop" and "Park Square Live Music & Coffee"
+    # response = {
+    #     "count":
+    #         1,
+    #     "data": [{
+    #         "id": 2,
+    #         "name": "The Dueling Pianos Bar",
+    #         "num_upcoming_shows": 0,
+    #     }]
+    # }
+    search = request.form.get('search_term', '')
+    query = Venue.query.filter(Venue.name.ilike(f"%{search}%")).all()
     response = {
-        "count":
-            1,
+        "count": len(query),
         "data": [{
-            "id": 2,
-            "name": "The Dueling Pianos Bar",
-            "num_upcoming_shows": 0,
-        }]
+            "id": venue.id,
+            "name": venue.name
+        } for venue in query]
     }
     return render_template('pages/search_venues.html',
                            results=response,
@@ -366,12 +375,11 @@ def delete_venue(venue_id):
         name = venue.name
         db.session.delete(venue)
         db.session.commit()
-        flash('Venue ' + name+ ' was successfully deleted!')
+        flash('Venue ' + name + ' was successfully deleted!')
     except:
         print(sys.exc_info())
         db.session.rollback()
-        flash('An error occurred. Venue ' + name +
-              ' could not be deleted.')
+        flash('An error occurred. Venue ' + name + ' could not be deleted.')
     finally:
         db.session.close()
     return redirect(url_for('index'))
@@ -381,7 +389,6 @@ def delete_venue(venue_id):
 #  ----------------------------------------------------------------
 @app.route('/artists')
 def artists():
-    # TODO: replace with real data returned from querying the database
     artists = Artist.query.all()
     data = []
     for artist in artists:
@@ -404,13 +411,22 @@ def search_artists():
     # TODO: implement search on artists with partial string search. Ensure it is case-insensitive.
     # seach for "A" should return "Guns N Petals", "Matt Quevado", and "The Wild Sax Band".
     # search for "band" should return "The Wild Sax Band".
+    # response = {
+    #     "count": 1,
+    #     "data": [{
+    #         "id": 4,
+    #         "name": "Guns N Petals",
+    #         "num_upcoming_shows": 0,
+    #     }]
+    # }
+    search = request.form.get('search_term', '')
+    query = Artist.query.filter(Artist.name.ilike(f"%{search}%")).all()
     response = {
-        "count": 1,
+        "count": len(query),
         "data": [{
-            "id": 4,
-            "name": "Guns N Petals",
-            "num_upcoming_shows": 0,
-        }]
+            "id": artist.id,
+            "name": artist.name
+        } for artist in query]
     }
     return render_template('pages/search_artists.html',
                            results=response,
