@@ -34,6 +34,16 @@ migrate = Migrate(app, db)
 #----------------------------------------------------------------------------#
 
 
+class Show(db.Model):
+    __tablename__ = 'Show'
+    id = db.Column(db.Integer, primary_key=True)
+    artist_id = db.Column(db.Integer, db.ForeignKey('Artist.id'))
+    artist = db.relationship("Artist", backref="show")
+    venue_id = db.Column(db.Integer, db.ForeignKey('Venue.id'))
+    venue = db.relationship("Venue", backref="show")
+    start_time = db.Column(db.DateTime)
+
+
 class Venue(db.Model):
     __tablename__ = 'Venue'
 
@@ -50,14 +60,11 @@ class Venue(db.Model):
     seeking_talent = db.Column(db.Boolean)
     seeking_description = db.Column(db.String(120))
 
-    # TODO: implement any missing fields, as a database migration using Flask-Migrate
-
 
 class Artist(db.Model):
     __tablename__ = 'Artist'
 
     id = db.Column(db.Integer, primary_key=True)
-    venue_id = db.Column(db.Integer, db.ForeignKey('Venue.id'))
     name = db.Column(db.String)
     city = db.Column(db.String(120))
     state = db.Column(db.String(120))
@@ -68,17 +75,6 @@ class Artist(db.Model):
     website = db.Column(db.String(120))
     seeking_venue = db.Column(db.Boolean)
     seeking_description = db.Column(db.String(120))
-
-    # TODO: implement any missing fields, as a database migration using Flask-Migrate
-
-
-# TODO Implement Show and Artist models, and complete all model relationships and properties, as a database migration.
-class Show(db.Model):
-    __tablename__ = 'Show'
-    id = db.Column(db.Integer, primary_key=True)
-    artist_id = db.Column(db.Integer, db.ForeignKey('Artist.id'))
-    venue_id = db.Column(db.Integer, db.ForeignKey('Venue.id'))
-    start_time = db.Column(db.DateTime)
 
 
 #----------------------------------------------------------------------------#
@@ -408,9 +404,6 @@ def artists():
 
 @app.route('/artists/search', methods=['POST'])
 def search_artists():
-    # TODO: implement search on artists with partial string search. Ensure it is case-insensitive.
-    # seach for "A" should return "Guns N Petals", "Matt Quevado", and "The Wild Sax Band".
-    # search for "band" should return "The Wild Sax Band".
     # response = {
     #     "count": 1,
     #     "data": [{
@@ -713,6 +706,12 @@ def shows():
     # displays list of shows at /shows
     # TODO: replace with real venues data.
     #       num_shows should be aggregated based on number of upcoming shows per venue.
+    shows = Show.query.all()
+    data = [{
+        "venue_id": show.venue_id,
+        "venue_name": show.venue_id,
+        "artist_id": show.artist_id,
+    } for show in shows]
     data = [{
         "venue_id":
             1,
