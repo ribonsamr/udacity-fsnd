@@ -90,6 +90,7 @@ class TriviaTestCase(unittest.TestCase):
         self.assertEqual(Question.query.get(data['id']).difficulty, 5)
         self.assertGreater(after, before)
 
+
     def tearDown(self):
         """Executed after reach test"""
         pass

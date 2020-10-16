@@ -73,8 +73,8 @@ def create_app(test_config=None):
     @app.route('/questions', methods=['POST'])
     def create_question():
         body = request.get_json()
-        q = Question(body['question'], body['answer'], body['category'],
-                     body['difficulty'])
+        q = Question(body.get('question', ''), body.get('answer', ''), body.get('category', ''),
+                     body.get('difficulty', ''))
         q.insert()
         return jsonify({'success': True, 'id': q.id}), 200
 
