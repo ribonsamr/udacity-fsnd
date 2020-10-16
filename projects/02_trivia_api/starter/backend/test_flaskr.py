@@ -15,7 +15,8 @@ class TriviaTestCase(unittest.TestCase):
         self.app = create_app()
         self.client = self.app.test_client
         self.database_name = "trivia_test"
-        self.database_path = "postgres://{}/{}".format('localhost:5432', self.database_name)
+        self.database_path = "postgres://{}/{}".format('localhost:5432',
+                                                       self.database_name)
         setup_db(self.app, self.database_path)
 
         # binds the app to the current context
@@ -24,7 +25,6 @@ class TriviaTestCase(unittest.TestCase):
             self.db.init_app(self.app)
             # create all tables
             self.db.create_all()
-    
 
     def test_get_all_categories(self):
         response = self.client().get('/categories')
@@ -68,6 +68,27 @@ class TriviaTestCase(unittest.TestCase):
 
         self.assertEqual(response.status_code, 404)
         self.assertEqual(data['success'], False)
+
+    def test_create_question(self):
+        before = Question.query.count()
+        response = self.client().post('/questions',
+                                      json={
+                                          'question': 'a',
+                                          'answer': 'b',
+                                          'category': '1',
+                                          'difficulty': '5'
+                                      })
+        data = json.loads(response.data)
+        after = Question.query.count()
+
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(data['success'], True)
+        self.assertTrue('id' in data)
+        self.assertEqual(Question.query.get(data['id']).question, 'a')
+        self.assertEqual(Question.query.get(data['id']).answer, 'b')
+        self.assertEqual(Question.query.get(data['id']).category, 1)
+        self.assertEqual(Question.query.get(data['id']).difficulty, 5)
+        self.assertGreater(after, before)
 
     def tearDown(self):
         """Executed after reach test"""
