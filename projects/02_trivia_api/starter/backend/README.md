@@ -4,7 +4,7 @@
 
 ### Installing Dependencies
 
-- Python3.8
+- Python 3.8
 
 ### PIP Dependencies
 
