@@ -40,7 +40,7 @@ class QuizView extends Component {
   }
 
   handleChange = (event) => {
-    this.setState({[event.target.name]: event.target.value})
+    this.setState({guess: event.target.value})
   }
 
   getNextQuestion = () => {
@@ -79,7 +79,6 @@ class QuizView extends Component {
 
   submitGuess = (event) => {
     event.preventDefault();
-    const formatGuess = this.state.guess.replace(/[.,\/#!$%\^&\*;:{}=\-_`~()]/g,"").toLowerCase()
     let evaluate =  this.evaluateAnswer()
     this.setState({
       numCorrect: !evaluate ? this.state.numCorrect : this.state.numCorrect + 1,
@@ -132,9 +131,9 @@ class QuizView extends Component {
   }
 
   evaluateAnswer = () => {
-    const formatGuess = this.state.guess.replace(/[.,\/#!$%\^&\*;:{}=\-_`~()]/g,"").toLowerCase()
-    const answerArray = this.state.currentQuestion.answer.toLowerCase().split(' ');
-    return answerArray.includes(formatGuess)
+    const formatGuess = this.state.guess.toLowerCase().trim()
+    const answer = this.state.currentQuestion.answer.toLowerCase().trim();
+    return answer === formatGuess
   }
 
   renderCorrectAnswer(){
