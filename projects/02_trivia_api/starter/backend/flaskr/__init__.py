@@ -87,17 +87,6 @@ def create_app(test_config=None):
             'currentCategory': ''
         }), 200
 
-    '''
-    @TODO: 
-    Create a POST endpoint to get questions based on a search term. 
-    It should return any questions for whom the search term 
-    is a substring of the question. 
-
-    TEST: Search by any phrase. The questions list will update to include 
-    only question that include that string within their question. 
-    Try using the word "title" to start. 
-    '''
-
     @app.route('/categories/<int:category_id>/questions')
     def get_questions_by_category(category_id):
         questions = [
@@ -122,12 +111,12 @@ def create_app(test_config=None):
     one question at a time is displayed, the user is allowed to answer
     and shown whether they were correct or not. 
     '''
+    
     '''
     @TODO: 
     Create error handlers for all expected errors 
     including 404 and 422. 
     '''
-
     @app.errorhandler(404)
     def not_found(error):
         return jsonify({
