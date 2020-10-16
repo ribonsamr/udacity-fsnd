@@ -62,16 +62,15 @@ def create_app(test_config=None):
     TEST: When you click the trash icon next to a question, the question will be removed.
     This removal will persist in the database and when you refresh the page. 
     '''
-    '''
-    @TODO: 
-    Create an endpoint to POST a new question, 
-    which will require the question and answer text, 
-    category, and difficulty score.
 
-    TEST: When you submit a question on the "Add" tab, 
-    the form will clear and the question will appear at the end of the last page
-    of the questions list in the "List" tab.  
-    '''
+    @app.route('/questions', methods=['POST'])
+    def create_question():
+        body = request.get_json()
+        q = Question(body['question'], body['answer'], body['difficulty'],
+                     body['category'])
+        q.insert()
+        return jsonify({'success': True}), 200
+
     '''
     @TODO: 
     Create a POST endpoint to get questions based on a search term. 
