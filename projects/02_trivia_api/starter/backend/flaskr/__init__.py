@@ -9,12 +9,12 @@ from models import Category, Question, setup_db
 QUESTIONS_PER_PAGE = 10
 
 
-def paginate_questions(request):
+def paginate_questions(request, selection):
     page = request.args.get('page', 1, type=int)
     start = QUESTIONS_PER_PAGE * (page - 1)
     end = QUESTIONS_PER_PAGE + start
 
-    questions = Question.query.order_by(Question.id).all()
+    questions = selection
     questions = [q.format() for q in questions][start:end]
 
     return questions
@@ -42,7 +42,9 @@ def create_app(test_config=None):
 
     @app.route('/questions')
     def get_questions():
-        questions = paginate_questions(request)
+        questions = paginate_questions(
+            request,
+            Question.query.order_by(Question.id).all())
         categories = [c.format() for c in Category.query.all()]
         if len(questions) == 0:
             abort(404)
@@ -63,14 +65,6 @@ def create_app(test_config=None):
             'success': True,
         }), 200
 
-    '''
-    @TODO: 
-    Create an endpoint to DELETE question using a question ID. 
-
-    TEST: When you click the trash icon next to a question, the question will be removed.
-    This removal will persist in the database and when you refresh the page. 
-    '''
-
     @app.route('/questions', methods=['POST'])
     def create_question():
         body = request.get_json()
@@ -78,6 +72,20 @@ def create_app(test_config=None):
                      body['category'])
         q.insert()
         return jsonify({'success': True}), 200
+
+    @app.route('/questions/search', methods=['POST'])
+    def search_questions():
+        search_term = request.get_json()['searchTerm']
+        questions = [
+            q.format() for q in Question.query.order_by(Question.id).filter(
+                Question.question.ilike(f"%{search_term}%")).all()
+        ]
+        return jsonify({
+            'success': True,
+            'questions': questions,
+            'totalQuestions': len(questions),
+            'currentCategory': ''
+        }), 200
 
     '''
     @TODO: 
