@@ -100,6 +100,53 @@ def create_app(test_config=None):
             'currentCategory': Category.query.get(category_id).type
         })
 
+    @app.route('/quizzes', methods=['POST'])
+    def quizzes():
+        body = request.get_json()
+        previous_questions = body['previous_questions']  # By ID
+        quiz_category = int(body['quiz_category']['id'])
+        print(previous_questions)
+        # If ALL
+        if quiz_category == 0:
+            questions = [q.format() for q in Question.query.all()]
+
+            # Don't choose from previous questions
+            questions = list(
+                filter(lambda x: int(x['id']) not in previous_questions,
+                       questions))
+            
+            # If there's no questions left, force end
+            if not questions:
+                return jsonify({'success': True, 'forceEnd': True})
+
+            question = random.choice(questions)
+            return jsonify({'success': True, 'question': question})
+
+        else:
+            questions = [
+                q.format() for q in Question.query.join(
+                    Category, Question.category == Category.id).filter(
+                        Category.id == quiz_category).all()
+            ]
+
+            # Don't choose from previous questions
+            questions = list(
+                filter(lambda x: int(x['id']) not in previous_questions,
+                       questions))
+
+            # If there's no questions left, force end
+            if not questions:
+                return jsonify({'success': True, 'forceEnd': True})
+
+            question = random.choice(questions)
+            return jsonify({'success': True, 'question': question})
+
+        #   currentQuestion: result.question,
+        #   forceEnd: result.question ? false : true
+        # By category
+
+        # print(questions)
+
     '''
     @TODO: 
     Create a POST endpoint to get questions to play the quiz. 
@@ -111,12 +158,12 @@ def create_app(test_config=None):
     one question at a time is displayed, the user is allowed to answer
     and shown whether they were correct or not. 
     '''
-    
     '''
     @TODO: 
     Create error handlers for all expected errors 
     including 404 and 422. 
     '''
+
     @app.errorhandler(404)
     def not_found(error):
         return jsonify({

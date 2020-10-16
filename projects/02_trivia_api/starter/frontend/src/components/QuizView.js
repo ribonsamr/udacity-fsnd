@@ -36,7 +36,7 @@ class QuizView extends Component {
   }
 
   selectCategory = ({type, id=0}) => {
-    this.setState({quizCategory: {type, id}}, this.getNextQuestion)
+    this.setState({quizCategory: {id}}, this.getNextQuestion)
   }
 
   handleChange = (event) => {
@@ -109,10 +109,10 @@ class QuizView extends Component {
                     id = parseInt(id)
                   return (
                     <div
-                      key={id}
-                      value={id}
+                      key={id+1}
+                      value={id+1}
                       className="play-category"
-                      onClick={() => this.selectCategory({type:this.state.categories[id].type, id})}>
+                      onClick={() => this.selectCategory({type:this.state.categories[id].type, id:id+1})}>
                       {this.state.categories[id].type}
                     </div>
                   )
