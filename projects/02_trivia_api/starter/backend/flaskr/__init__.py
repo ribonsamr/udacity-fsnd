@@ -9,6 +9,17 @@ from models import Category, Question, setup_db
 QUESTIONS_PER_PAGE = 10
 
 
+def paginate_questions(request):
+    page = request.args.get('page', 1, type=int)
+    start = QUESTIONS_PER_PAGE * (page - 1)
+    end = QUESTIONS_PER_PAGE + start
+
+    questions = Question.query.order_by(Question.id).all()
+    questions = [q.format() for q in questions][start:end]
+
+    return questions
+
+
 def create_app(test_config=None):
     app = Flask(__name__)
     setup_db(app)
@@ -28,6 +39,21 @@ def create_app(test_config=None):
         categories = Category.query.all()
         categories = [c.format() for c in categories]
         return jsonify(categories)
+
+    @app.route('/questions')
+    def get_questions():
+        questions = paginate_questions(request)
+        categories = [c.format() for c in Category.query.all()]
+        if len(questions) == 0:
+            abort(404)
+
+        return jsonify({
+            'success': True,
+            'questions': questions,
+            'current_category': categories[0].get('type'),
+            'categories': categories,
+            'total_questions': len(Question.query.all())
+        })
 
     '''
     @TODO: 
