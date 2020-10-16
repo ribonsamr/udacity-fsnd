@@ -55,6 +55,14 @@ def create_app(test_config=None):
             'total_questions': len(Question.query.all())
         })
 
+    @app.route('/questions/<int:question_id>', methods=['DELETE'])
+    def delete_question(question_id):
+        q = Question.query.get(question_id)
+        q.delete()
+        return jsonify({
+            'success': True,
+        }), 200
+
     '''
     @TODO: 
     Create an endpoint to DELETE question using a question ID. 
@@ -106,12 +114,12 @@ def create_app(test_config=None):
     one question at a time is displayed, the user is allowed to answer
     and shown whether they were correct or not. 
     '''
-    
     '''
     @TODO: 
     Create error handlers for all expected errors 
     including 404 and 422. 
     '''
+
     @app.errorhandler(404)
     def not_found(error):
         return jsonify({
@@ -119,7 +127,7 @@ def create_app(test_config=None):
             "error": 404,
             "message": "Not found"
         }), 404
-    
+
     @app.errorhandler(422)
     def not_found(error):
         return jsonify({
@@ -127,6 +135,5 @@ def create_app(test_config=None):
             "error": 422,
             "message": "unprocessable"
         }), 422
-
 
     return app
