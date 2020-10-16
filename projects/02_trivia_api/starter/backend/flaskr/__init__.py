@@ -46,6 +46,7 @@ def create_app(test_config=None):
             request,
             Question.query.order_by(Question.id).all())
         categories = [c.format() for c in Category.query.all()]
+
         if len(questions) == 0:
             abort(404)
 
