@@ -100,6 +100,7 @@ def create_app(test_config=None):
                     Category.id == category_id).all()
         ]
         return jsonify({
+            'success': True,
             'questions': questions,
             'totalQuestions': len(questions),
             'currentCategory': Category.query.get(category_id).type

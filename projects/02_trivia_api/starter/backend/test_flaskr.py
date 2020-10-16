@@ -104,6 +104,15 @@ class TriviaTestCase(unittest.TestCase):
         self.assertTrue('questions' in data)
         self.assertEqual(len(data['questions']), 2)
 
+    def test_get_question_by_category(self):
+        response = self.client().get('/categories/1/questions')
+        data = json.loads(response.data)
+
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(data['success'], True)
+        self.assertTrue('questions' in data)
+        self.assertEqual(len(data['questions']), 3)
+
     def tearDown(self):
         """Executed after reach test"""
         pass
