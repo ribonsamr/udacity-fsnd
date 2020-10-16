@@ -1,4 +1,4 @@
-dropdb trivia_test
-createdb trivia_test
-psql trivia_test < trivia.psql
+dropdb trivia_test &>/dev/null
+createdb trivia_test &>/dev/null
+psql trivia_test < trivia.psql &>/dev/null
 python test_flaskr.py
