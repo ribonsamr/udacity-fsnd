@@ -105,7 +105,7 @@ def create_app(test_config=None):
         body = request.get_json()
         previous_questions = body['previous_questions']  # By ID
         quiz_category = int(body['quiz_category']['id'])
-        print(previous_questions)
+
         # If ALL
         if quiz_category == 0:
             questions = [q.format() for q in Question.query.all()]
@@ -114,7 +114,7 @@ def create_app(test_config=None):
             questions = list(
                 filter(lambda x: int(x['id']) not in previous_questions,
                        questions))
-            
+
             # If there's no questions left, force end
             if not questions:
                 return jsonify({'success': True, 'forceEnd': True})
@@ -141,23 +141,6 @@ def create_app(test_config=None):
             question = random.choice(questions)
             return jsonify({'success': True, 'question': question})
 
-        #   currentQuestion: result.question,
-        #   forceEnd: result.question ? false : true
-        # By category
-
-        # print(questions)
-
-    '''
-    @TODO: 
-    Create a POST endpoint to get questions to play the quiz. 
-    This endpoint should take category and previous question parameters 
-    and return a random questions within the given category, 
-    if provided, and that is not one of the previous questions. 
-
-    TEST: In the "Play" tab, after a user selects "All" or a category,
-    one question at a time is displayed, the user is allowed to answer
-    and shown whether they were correct or not. 
-    '''
     '''
     @TODO: 
     Create error handlers for all expected errors 
