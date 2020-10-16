@@ -129,6 +129,7 @@ The environment variables are stored in the `.env` file, so you can just run fla
     "id": 6,
     "question": "What was the title of the 1990 fantasy directed by Tim Burton about a young man with multi-bladed appendages?"
   },
+  ...
   ```
 
 - **POST** `/questions`, create a question, takes a json body of (question, answer, category, difficulty) and returns the new record id
