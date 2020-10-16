@@ -84,7 +84,7 @@ The environment variables are stored in the `.env` file, so you can just run fla
       "difficulty": 4,
       "id": 22,
       "question": "Hematology is a branch of medicine involving the study of what?"
-      },
+      }],
   "success": true,
   "totalQuestions": 3
   }
@@ -133,58 +133,61 @@ The environment variables are stored in the `.env` file, so you can just run fla
   ```
 
 - **POST** `/questions`, create a question, takes a json body of (question, answer, category, difficulty) and returns the new record id
-    ```json
-    {
+
+  ```json
+  {
     "id": 37,
     "success": true
-    }
-    ```
+  }
+  ```
 
 - **POST** `/questions/search`, search with a keyword in the questions
-    ```json
-    {
+
+  ```json
+  {
     "currentCategory": "",
     "questions": [
-        {
-            "answer": "Maya Angelou",
-            "category": 4,
-            "difficulty": 2,
-            "id": 5,
-            "question": "Whose autobiography is entitled 'I Know Why the Caged Bird Sings'?"
-        },
-        {
-            "answer": "Edward Scissorhands",
-            "category": 5,
-            "difficulty": 3,
-            "id": 6,
-            "question": "What was the title of the 1990 fantasy directed by Tim Burton about a young man with multi-bladed appendages?"
-        }
+      {
+        "answer": "Maya Angelou",
+        "category": 4,
+        "difficulty": 2,
+        "id": 5,
+        "question": "Whose autobiography is entitled 'I Know Why the Caged Bird Sings'?"
+      },
+      {
+        "answer": "Edward Scissorhands",
+        "category": 5,
+        "difficulty": 3,
+        "id": 6,
+        "question": "What was the title of the 1990 fantasy directed by Tim Burton about a young man with multi-bladed appendages?"
+      }
     ],
     "success": true,
     "totalQuestions": 2
-    }
-    ```
+  }
+  ```
 
 - **DELETE** `/questions/<int:question_id>`, delete a question by its id
-    ```json
-    {
+
+  ```json
+  {
     "success": true
-    }
-    ```
+  }
+  ```
 
 - **POST** `/quizzes`, takes a list `previous_questions` and a category then returns a random question that is unique in the current game session
-    ```json
-    {
+  ```json
+  {
     "question": {
-        "answer": "Jackson Pollock",
-        "category": 2,
-        "difficulty": 2,
-        "id": 19,
-        "question": "Which American artist was a pioneer of Abstract Expressionism, and a leading exponent of action painting?"
+      "answer": "Jackson Pollock",
+      "category": 2,
+      "difficulty": 2,
+      "id": 19,
+      "question": "Which American artist was a pioneer of Abstract Expressionism, and a leading exponent of action painting?"
     },
     "success": true
-    }
-    ```
+  }
+  ```
 
 ## Testing
 
