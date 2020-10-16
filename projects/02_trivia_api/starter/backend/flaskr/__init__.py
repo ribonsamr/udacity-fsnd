@@ -61,6 +61,10 @@ def create_app(test_config=None):
     @app.route('/questions/<int:question_id>', methods=['DELETE'])
     def delete_question(question_id):
         q = Question.query.get(question_id)
+
+        if not q:
+            abort(404)
+
         q.delete()
         return jsonify({
             'success': True,

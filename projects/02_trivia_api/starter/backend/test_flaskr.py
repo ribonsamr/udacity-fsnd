@@ -50,6 +50,25 @@ class TriviaTestCase(unittest.TestCase):
         self.assertEqual(data['success'], False)
         self.assertFalse('questions' in data)
 
+    def test_delete_question(self):
+        before = Question.query.count()
+        response = self.client().delete('/questions/10')
+        data = json.loads(response.data)
+        after = Question.query.count()
+
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(data['success'], True)
+        self.assertGreater(before, after)
+
+    def test_fail_delete_question(self):
+        before = Question.query.count()
+        response = self.client().delete('/questions/0')
+        data = json.loads(response.data)
+        after = Question.query.count()
+
+        self.assertEqual(response.status_code, 404)
+        self.assertEqual(data['success'], False)
+
     def tearDown(self):
         """Executed after reach test"""
         pass
