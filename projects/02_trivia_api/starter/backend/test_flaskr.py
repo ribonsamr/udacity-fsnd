@@ -6,6 +6,10 @@ from flask_sqlalchemy import SQLAlchemy
 from flaskr import create_app
 from models import setup_db, Question, Category
 
+os.system("dropdb trivia_test &>/dev/null")
+os.system("createdb trivia_test &>/dev/null")
+os.system("psql trivia_test < trivia.psql &>/dev/null")
+
 
 class TriviaTestCase(unittest.TestCase):
     """This class represents the trivia test case"""
@@ -90,6 +94,15 @@ class TriviaTestCase(unittest.TestCase):
         self.assertEqual(Question.query.get(data['id']).difficulty, 5)
         self.assertGreater(after, before)
 
+    def test_search_question(self):
+        response = self.client().post('/questions/search',
+                                      json={'searchTerm': 'title'})
+        data = json.loads(response.data)
+
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(data['success'], True)
+        self.assertTrue('questions' in data)
+        self.assertEqual(len(data['questions']), 2)
 
     def tearDown(self):
         """Executed after reach test"""
