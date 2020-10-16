@@ -38,7 +38,7 @@ def create_app(test_config=None):
     def get_categories():
         categories = Category.query.all()
         categories = [c.format() for c in categories]
-        return jsonify(categories)
+        return jsonify({'success': True, 'categories': categories})
 
     @app.route('/questions')
     def get_questions():
@@ -68,8 +68,8 @@ def create_app(test_config=None):
     @app.route('/questions', methods=['POST'])
     def create_question():
         body = request.get_json()
-        q = Question(body['question'], body['answer'], body['difficulty'],
-                     body['category'])
+        q = Question(body['question'], body['answer'], body['category'],
+                     body['difficulty'])
         q.insert()
         return jsonify({'success': True}), 200
 
