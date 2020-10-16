@@ -73,6 +73,10 @@ def create_app(test_config=None):
     @app.route('/questions', methods=['POST'])
     def create_question():
         body = request.get_json()
+        
+        if not body:
+            abort(404)
+
         q = Question(body.get('question', ''), body.get('answer', ''),
                      body.get('category', ''), body.get('difficulty', ''))
         q.insert()
@@ -178,7 +182,7 @@ def create_app(test_config=None):
             "error": 400,
             "message": "Bad request"
         }), 400
-    
+
     @app.errorhandler(500)
     def not_unprocessable(error):
         return jsonify({
@@ -186,4 +190,5 @@ def create_app(test_config=None):
             "error": 500,
             "message": "Server error"
         }), 500
+
     return app
