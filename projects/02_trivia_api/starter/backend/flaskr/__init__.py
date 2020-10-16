@@ -73,8 +73,8 @@ def create_app(test_config=None):
     @app.route('/questions', methods=['POST'])
     def create_question():
         body = request.get_json()
-        q = Question(body.get('question', ''), body.get('answer', ''), body.get('category', ''),
-                     body.get('difficulty', ''))
+        q = Question(body.get('question', ''), body.get('answer', ''),
+                     body.get('category', ''), body.get('difficulty', ''))
         q.insert()
         return jsonify({'success': True, 'id': q.id}), 200
 
@@ -147,12 +147,6 @@ def create_app(test_config=None):
             question = random.choice(questions)
             return jsonify({'success': True, 'question': question})
 
-    '''
-    @TODO: 
-    Create error handlers for all expected errors 
-    including 404 and 422. 
-    '''
-
     @app.errorhandler(404)
     def not_found(error):
         return jsonify({
@@ -162,7 +156,7 @@ def create_app(test_config=None):
         }), 404
 
     @app.errorhandler(405)
-    def not_found(error):
+    def not_allowed(error):
         return jsonify({
             "success": False,
             "error": 405,
@@ -170,7 +164,7 @@ def create_app(test_config=None):
         }), 405
 
     @app.errorhandler(422)
-    def not_found(error):
+    def not_unprocessable(error):
         return jsonify({
             "success": False,
             "error": 422,
