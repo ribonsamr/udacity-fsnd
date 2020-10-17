@@ -1,4 +1,5 @@
 import os
+import sys
 from flask import Flask, request, jsonify, abort
 from sqlalchemy import exc
 import json
@@ -12,6 +13,7 @@ setup_db(app)
 CORS(app)
 
 # db_drop_and_create_all()
+
 
 ## ROUTES
 @app.route('/drinks')
@@ -31,22 +33,29 @@ def get_drinks_detail(p):
     return jsonify({'success': True, 'drinks': drinks}), 200
 
 
-'''
-@TODO implement endpoint
-    POST /drinks
-        it should create a new row in the drinks table
-        it should require the 'post:drinks' permission
-        it should contain the drink.long() data representation
-    returns status code 200 and json {"success": True, "drinks": drink} where drink an array containing only the newly created drink
-        or appropriate status code indicating reason for failure
-'''
-
 @app.route('/drinks', methods=['POST'])
 @requires_auth('post:drinks')
 def create_drinks(p):
     res = request.get_json()
 
-    pass
+    if not res:
+        abort(422)
+
+    title = res.get('title', '')
+    recipe = json.dumps(res.get('recipe', '{}'))
+
+    drink = Drink(title=title, recipe=recipe)
+    
+    try:
+        drink.insert()
+    except:
+        print(sys.exc_info())
+        abort(422)
+
+    drinks = [d.long() for d in Drink.query.all()]
+
+    return jsonify({'success': True, 'drinks': drinks}), 200
+
 
 '''
 @TODO implement endpoint
@@ -81,7 +90,7 @@ def unprocessable(error):
     return jsonify({
         "success": False,
         "error": 422,
-        "message": "unprocessable"
+        "message": "Unprocessable"
     }), 422
 
 
