@@ -10,40 +10,16 @@ from .auth.auth import AuthError, requires_auth
 app = Flask(__name__)
 setup_db(app)
 CORS(app)
-'''
-@TODO uncomment the following line to initialize the datbase
-!! NOTE THIS WILL DROP ALL RECORDS AND START YOUR DB FROM SCRATCH
-!! NOTE THIS MUST BE UNCOMMENTED ON FIRST RUN
-'''
+
 # db_drop_and_create_all()
 
 ## ROUTES
-'''
-@TODO implement endpoint
-    GET /drinks
-        it should be a public endpoint
-        it should contain only the drink.short() data representation
-    returns status code 200 and json {"success": True, "drinks": drinks} where drinks is the list of drinks
-        or appropriate status code indicating reason for failure
-'''
-
-
 @app.route('/drinks')
 def get_drinks():
     drinks = Drink.query.all()
     drinks = [d.short() for d in drinks]
 
     return jsonify({'success': True, 'drinks': drinks}), 200
-
-
-'''
-@TODO implement endpoint
-    GET /drinks-detail
-        it should require the 'get:drinks-detail' permission
-        it should contain the drink.long() data representation
-    returns status code 200 and json {"success": True, "drinks": drinks} where drinks is the list of drinks
-        or appropriate status code indicating reason for failure
-'''
 
 
 @app.route('/drinks-detail')
@@ -64,6 +40,14 @@ def get_drinks_detail(p):
     returns status code 200 and json {"success": True, "drinks": drink} where drink an array containing only the newly created drink
         or appropriate status code indicating reason for failure
 '''
+
+@app.route('/drinks', methods=['POST'])
+@requires_auth('post:drinks')
+def create_drinks(p):
+    res = request.get_json()
+
+    pass
+
 '''
 @TODO implement endpoint
     PATCH /drinks/<id>
