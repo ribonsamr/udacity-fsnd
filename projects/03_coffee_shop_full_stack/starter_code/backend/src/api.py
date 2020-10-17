@@ -44,6 +44,17 @@ def get_drinks():
     returns status code 200 and json {"success": True, "drinks": drinks} where drinks is the list of drinks
         or appropriate status code indicating reason for failure
 '''
+
+
+@app.route('/drinks-detail')
+@requires_auth('get:drinks-detail')
+def get_drinks_detail(p):
+    drinks = Drink.query.all()
+    drinks = [d.long() for d in drinks]
+
+    return jsonify({'success': True, 'drinks': drinks}), 200
+
+
 '''
 @TODO implement endpoint
     POST /drinks
