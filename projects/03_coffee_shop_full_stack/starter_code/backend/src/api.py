@@ -45,7 +45,7 @@ def create_drinks(p):
     recipe = json.dumps(res.get('recipe', '{}'))
 
     drink = Drink(title=title, recipe=recipe)
-    
+
     try:
         drink.insert()
     except:
@@ -68,6 +68,33 @@ def create_drinks(p):
     returns status code 200 and json {"success": True, "drinks": drink} where drink an array containing only the updated drink
         or appropriate status code indicating reason for failure
 '''
+
+
+@app.route('/drinks/<int:drink_id>', methods=['PATCH'])
+@requires_auth('patch:drinks')
+def update_drinks(p, drink_id):
+    d = Drink.query.get(drink_id)
+
+    if not d:
+        abort(404)
+
+    res = request.get_json()
+
+    if not res:
+        abort(422)
+
+    d.title = res.get('title', '')
+    d.recipe = json.dumps(res.get('recipe', '{}'))
+
+    try:
+        d.update()
+    except:
+        print(sys.exc_info())
+        abort(422)
+
+    return jsonify({'success': True, 'drinks': d.long()}), 200
+
+
 '''
 @TODO implement endpoint
     DELETE /drinks/<id>
