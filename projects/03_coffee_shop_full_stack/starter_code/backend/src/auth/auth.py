@@ -2,7 +2,7 @@ import json
 from functools import wraps
 from urllib.request import urlopen
 
-from flask import _request_ctx_stack, request
+from flask import _request_ctx_stack, request, abort
 from jose import jwt
 
 AUTH0_DOMAIN = 'rib-fsnd.eu.auth0.com'
@@ -59,21 +59,14 @@ def get_token_auth_header():
     return token
 
 
-'''
-@TODO implement check_permissions(permission, payload) method
-    @INPUTS
-        permission: string permission (i.e. 'post:drink')
-        payload: decoded jwt payload
-
-    it should raise an AuthError if permissions are not included in the payload
-        !!NOTE check your RBAC settings in Auth0
-    it should raise an AuthError if the requested permission string is not in the payload permissions array
-    return true otherwise
-'''
-
-
 def check_permissions(permission, payload):
-    raise Exception('Not Implemented')
+    if 'permissions' not in payload:
+        raise AuthError({'code': 400, 'description': 'Permissions not found'})
+
+    if permission not in payload['permissions']:
+        raise AuthError({'code': 403, 'description': 'Unauthorized Access'})
+
+    return True
 
 
 def verify_decode_jwt(token):
