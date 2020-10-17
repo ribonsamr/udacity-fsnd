@@ -10,7 +10,6 @@ from .auth.auth import AuthError, requires_auth
 app = Flask(__name__)
 setup_db(app)
 CORS(app)
-
 '''
 @TODO uncomment the following line to initialize the datbase
 !! NOTE THIS WILL DROP ALL RECORDS AND START YOUR DB FROM SCRATCH
@@ -29,6 +28,14 @@ CORS(app)
 '''
 
 
+@app.route('/drinks')
+def get_drinks():
+    drinks = Drink.query.all()
+    drinks = [d.short() for d in drinks]
+
+    return jsonify({'success': True, 'drinks': drinks}), 200
+
+
 '''
 @TODO implement endpoint
     GET /drinks-detail
@@ -37,8 +44,6 @@ CORS(app)
     returns status code 200 and json {"success": True, "drinks": drinks} where drinks is the list of drinks
         or appropriate status code indicating reason for failure
 '''
-
-
 '''
 @TODO implement endpoint
     POST /drinks
@@ -48,8 +53,6 @@ CORS(app)
     returns status code 200 and json {"success": True, "drinks": drink} where drink an array containing only the newly created drink
         or appropriate status code indicating reason for failure
 '''
-
-
 '''
 @TODO implement endpoint
     PATCH /drinks/<id>
@@ -61,8 +64,6 @@ CORS(app)
     returns status code 200 and json {"success": True, "drinks": drink} where drink an array containing only the updated drink
         or appropriate status code indicating reason for failure
 '''
-
-
 '''
 @TODO implement endpoint
     DELETE /drinks/<id>
@@ -74,18 +75,20 @@ CORS(app)
         or appropriate status code indicating reason for failure
 '''
 
-
 ## Error Handling
 '''
 Example error handling for unprocessable entity
 '''
+
+
 @app.errorhandler(422)
 def unprocessable(error):
     return jsonify({
-                    "success": False, 
-                    "error": 422,
-                    "message": "unprocessable"
-                    }), 422
+        "success": False,
+        "error": 422,
+        "message": "unprocessable"
+    }), 422
+
 
 '''
 @TODO implement error handlers using the @app.errorhandler(error) decorator
@@ -97,13 +100,10 @@ def unprocessable(error):
                     }), 404
 
 '''
-
 '''
 @TODO implement error handler for 404
     error handler should conform to general task above 
 '''
-
-
 '''
 @TODO implement error handler for AuthError
     error handler should conform to general task above 
