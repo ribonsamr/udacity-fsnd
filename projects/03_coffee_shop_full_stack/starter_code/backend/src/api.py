@@ -79,7 +79,7 @@ def update_drinks(p, drink_id):
         print(sys.exc_info())
         abort(422)
 
-    return jsonify({'success': True, 'drinks': d.long()}), 200
+    return jsonify({'success': True, 'drinks': [d.long()]}), 200
 
 
 '''

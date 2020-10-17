@@ -64,7 +64,7 @@ def check_permissions(permission, payload):
         raise AuthError({'code': 400, 'description': 'Permissions not found'}, 400)
 
     if permission not in payload['permissions']:
-        raise AuthError({'code': 403, 'description': 'Unauthorized Access'}, 403)
+        raise AuthError({'code': 401, 'description': 'Unauthorized Access'}, 401)
 
     return True
 
@@ -125,7 +125,7 @@ def verify_decode_jwt(token):
         {
             'code': 'invalid_header',
             'description': 'Unable to find the appropriate key.'
-        }, 400)
+        }, 401)
 
 
 def requires_auth(permission=''):
